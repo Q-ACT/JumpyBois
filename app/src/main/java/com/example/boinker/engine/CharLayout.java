@@ -11,12 +11,12 @@ public class CharLayout {
         charCards = new CharCard[icons.length-1];
         this.lockedChars = lockedChars;
         int offset = 0;
-        for(int i = currentPlayer; i == icons.length-1; i++){
+        for(int i = currentPlayer; i < icons.length-1; i++){
             charCards[i] = new CharCard(card,icons[i],lockedIcons[i],offset * 20);
             offset++;
         }
         offset = 0;
-        for(int i = currentPlayer - 1; i == 0; i--){
+        for(int i = currentPlayer - 1; i > 0; i--){
             charCards[i] = new CharCard(card,icons[i],lockedIcons[i],offset * -20);
             offset++;
         }

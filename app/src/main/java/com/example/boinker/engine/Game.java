@@ -60,7 +60,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private ObjectScroller objectScroller;
     private CharLayout charLayout;
     public static ArrayList<GameObject> gameObjects;
-    private int currentPlayer = 1;
+    private int currentPlayer = 3;
 
 
 // Set extraDetails to true to show hitboxes, spawn rate, etc

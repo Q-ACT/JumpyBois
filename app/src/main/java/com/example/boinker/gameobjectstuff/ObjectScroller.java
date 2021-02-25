@@ -40,11 +40,6 @@ public class ObjectScroller {
 
     private int getTotalWidth(){
         return groundSegments.size() * texture.getWidth();
-//        int width = 0;
-//        for(int i = 0;i < groundSegments.size(); i++){
-//            width += groundSegments.get(i).sprite.getWidth();
-//        }
-//        return width;
     }
 
     public void update(int xVelocity,int y){
