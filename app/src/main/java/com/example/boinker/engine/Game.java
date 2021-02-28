@@ -60,7 +60,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private ObjectScroller objectScroller;
     private CharLayout charLayout;
     public static ArrayList<GameObject> gameObjects;
-    private int currentPlayer = 3;
+    private int currentPlayer = 0;
 
 
 // Set extraDetails to true to show hitboxes, spawn rate, etc
@@ -87,6 +87,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             BitmapFactory.decodeResource(getResources(), R.drawable.squidboiicon)
     };
     private Bitmap[] lockedPlayerSkinIcons = {
+            BitmapFactory.decodeResource(getResources(), R.drawable.runnyboiicon),
             BitmapFactory.decodeResource(getResources(), R.drawable.lockedsticky),
             BitmapFactory.decodeResource(getResources(), R.drawable.lockedbrain),
             BitmapFactory.decodeResource(getResources(), R.drawable.lockedsquid)
@@ -116,17 +117,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         setFocusable(true);
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        buttons = new ButtonLayout();
-        charLayout = new CharLayout(lockedPlayers,playerSkinIcons,lockedPlayerSkinIcons,playerSprites,card,currentPlayer);
-
-        gameState = GameState.MENU;
         screenWidth = size.x;
         screenHeight = size.y;
+        sharedPreferences = context.getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        gameState = GameState.MENU;
+
+        buttons = new ButtonLayout();
         objectScroller = new ObjectScroller(groundTexture,objectSprites);
         gameObjects = new ArrayList<>();
-        player = new Player(playerSprites[0], coinSheet);
+        player = new Player(playerSprites[currentPlayer], coinSheet);
+        charLayout = new CharLayout(lockedPlayers,playerSkinIcons,lockedPlayerSkinIcons,playerSprites,card,currentPlayer);
 
         tpaint = new Paint();
         tpaint2 = new Paint();

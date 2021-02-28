@@ -19,8 +19,8 @@ public class CharCard {
         height = card.getHeight();
         width = card.getWidth();
         x = Game.screenWidth / 2 - width / 2;
-        y = Game.screenWidth / 5;
-        x -= xOffset;
+        y = Game.screenHeight / 2 - height / 2;
+        x += xOffset;
     }
 
     public void draw(Canvas canvas){
