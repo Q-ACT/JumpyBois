@@ -63,7 +63,7 @@ public class Player {
     }
 
     public void switchSprite(Bitmap sprite){
-        playerSprite.sprite = sprite;
+        playerSprite.changeSprite(sprite);
     }
 
     public void reset(){
@@ -88,10 +88,7 @@ public class Player {
     }
 
     private int i;
-    //private int previousY;
-    //private int deltaY;
     public void update() {
-       // previousY = (int)y;
         if(i == 120){
             xVelocity++;
             i = 0;
@@ -161,7 +158,6 @@ public class Player {
 
     private void coinJumpTick(){
             coinSprite.update(0);
-            //coinY += deltaY;
             coinY -= coinYVelocity--;
             if(coinY >= y-10 || coinYVelocity <= -20 ) {
                 coinY = (int)y;

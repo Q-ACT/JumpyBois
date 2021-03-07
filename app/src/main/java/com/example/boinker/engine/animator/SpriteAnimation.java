@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class SpriteAnimation {
 
-    public Bitmap sprite;
+    private Bitmap sprite;
     private int columns;
     private float frameHeight, frameWidth;
     private ArrayList<Animation> animations;
@@ -19,6 +19,12 @@ public class SpriteAnimation {
         frameWidth = (float)sprite.getWidth() / columns;
         this.columns = columns;
         animations = new ArrayList<>();
+    }
+
+
+    // Only use changeSprite if the sprite has the exact same size and amount of frames as the previous sprites
+    public void changeSprite(Bitmap newSprite){
+        sprite = newSprite;
     }
 
     public void addAnimation(int startFrame, int endFrame, boolean randomStart, boolean loop){

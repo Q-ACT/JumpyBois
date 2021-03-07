@@ -104,6 +104,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         groundTexture = BitmapFactory.decodeResource(getResources(), R.drawable.ground),
         coinSheet =  BitmapFactory.decodeResource(getResources(), R.drawable.coin),
         card =  BitmapFactory.decodeResource(getResources(), R.drawable.ui_charpage),
+        activeCard = BitmapFactory.decodeResource(getResources(), R.drawable.ui_charpageactive),
     //                                  ui buttons
     //-----------------------------------------------------------------------------------------
             bButton = BitmapFactory.decodeResource(getResources(), R.drawable.ui_bbutton),
@@ -127,7 +128,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         objectScroller = new ObjectScroller(groundTexture,objectSprites);
         gameObjects = new ArrayList<>();
         player = new Player(playerSprites[currentPlayer], coinSheet);
-        charLayout = new CharLayout(lockedPlayers,playerSkinIcons,lockedPlayerSkinIcons,playerSprites,card,currentPlayer);
+        charLayout = new CharLayout(lockedPlayers,playerSkinIcons,lockedPlayerSkinIcons,card,activeCard,currentPlayer);
 
         tpaint = new Paint();
         tpaint2 = new Paint();
@@ -366,8 +367,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             case CHAR_MENU:
                 charLayout.update();
                 buttons.activate(charMenuButtons);
-                if (buttons.getPress("back_menu"))
+                if (buttons.getPress("back_menu")) {
+                    currentPlayer = charLayout.currentPlayer;
+                    player.switchSprite(playerSprites[currentPlayer]);
                     gameState = GameState.MENU;
+                }
                 break;
         }
         buttons.setPress(-1,-1);
