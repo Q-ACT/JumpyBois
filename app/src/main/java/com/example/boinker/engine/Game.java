@@ -60,7 +60,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private ObjectScroller objectScroller;
     private CharLayout charLayout;
     public static ArrayList<GameObject> gameObjects;
-    private int currentPlayer = 0;
+    private int currentPlayer = 2;
 
 
 // Set extraDetails to true to show hitboxes, spawn rate, etc
@@ -364,6 +364,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 break;
 
             case CHAR_MENU:
+                charLayout.update();
                 buttons.activate(charMenuButtons);
                 if (buttons.getPress("back_menu"))
                     gameState = GameState.MENU;
@@ -396,10 +397,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 buttons.anyTouch = false;
                 return true;
             case MotionEvent.ACTION_MOVE:
+                charLayout.setTouch(event.getX(),event.getY());
+                charLayout.touch = true;
                 return true;
             case MotionEvent.ACTION_UP:
                 buttons.buttonsUp();
                 screenTouch = false;
+                charLayout.touch = false;
                 return true;
         }
 

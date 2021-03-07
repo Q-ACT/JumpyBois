@@ -11,6 +11,7 @@ public class CharCard {
     private int y;
     private int height;
     private int width;
+    private boolean active;
 
     CharCard(Bitmap card, Bitmap skinIcon,Bitmap skinIconLocked, int xOffset){
         this.card = card;
@@ -28,9 +29,11 @@ public class CharCard {
         canvas.drawBitmap(skinIcon,x,y,null);
     }
 
-    public boolean getTouch(int touchX,int touchY, boolean touch){
-        return touch
-                && touchX > x
+    public void shift(int xShift){
+        x += xShift;
+    }
+    public void setTouch(int touchX,int touchY){
+          active = touchX > x
                 && touchX < x + width
                 && touchY > y
                 && touchY < y + height;
