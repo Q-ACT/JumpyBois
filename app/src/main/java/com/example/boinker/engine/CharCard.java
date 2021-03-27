@@ -44,6 +44,7 @@ public class CharCard {
     public void shift(int xShift){
         x += xShift;
     }
+
     public void setTouch(int touchX,int touchY){
         if(touchX > x && touchX < x + width && touchY > y && touchY < y + height){
             if(unlocked){

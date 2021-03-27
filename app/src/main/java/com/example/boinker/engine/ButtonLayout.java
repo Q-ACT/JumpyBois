@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 class ButtonLayout {
     private ArrayList<MenuButton> buttons;
-    boolean anyTouch;
+    boolean touch;
     ButtonLayout(){
         buttons = new ArrayList<>();
     }
@@ -23,42 +23,55 @@ class ButtonLayout {
         buttons.add(new MenuButton(x,y,label,icon,rows,columns));
     }
 
-    void setPress(float tX, float tY){
+    float touchX;
+    float touchY;
+    void setTouch(float tX, float tY){
+        touchX = tX;
+        touchY = tY;
         for(int i = 0; i < buttons.size(); i++) {
-            if(buttons.get(i).active) {
-                buttons.get(i).setPressed(tX, tY);
-                if (buttons.get(i).isPressed) {
-                    if (buttons.get(i).icon != null) {
-                        buttons.get(i).buttonSprite.setCurrentFrame(0, 1);
-                    }
-                    anyTouch = true;
+            if (buttons.get(i).getPressed(touchX,touchY)) {
+                if (buttons.get(i).icon != null) {
+                    buttons.get(i).buttonSprite.setCurrentFrame(0, 1);
+                }
+            } else{
+                if (buttons.get(i).icon != null) {
+                    buttons.get(i).buttonSprite.setCurrentFrame(0, 0);
                 }
             }
+//            buttons.get(i).buttonUp = false;
+//            if(buttons.get(i).active) {
+//                buttons.get(i).setPressed(tX, tY);
+//
+//                    anyTouch = true;
+//                }
+//            }
+//        }
         }
-
     }
 
-    void buttonsUp(){
+    void pressCheck(){
         for(int i = 0; i < buttons.size(); i++) {
+            if (buttons.get(i).active){
+                buttons.get(i).setPressed(touchX,touchY);
+            }
             if (buttons.get(i).icon != null) {
                 buttons.get(i).buttonSprite.setCurrentFrame(0, 0);
-
             }
         }
     }
 
+    void resetPress(){
+        for(int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).isPressed = false;
+        }
+    }
     boolean getPress(String label){
         for(int i = 0; i < buttons.size(); i++) {
-            if(buttons.get(i).label.equals(label))
+            if(buttons.get(i).label.equals(label)) {
                 return buttons.get(i).isPressed;
+            }
         }
         return false;
-    }
-
-    void drawAll(Canvas canvas){
-        for(int i = 0; i < buttons.size(); i++) {
-              buttons.get(i).draw(canvas);
-        }
     }
 
     void draw(Canvas canvas){

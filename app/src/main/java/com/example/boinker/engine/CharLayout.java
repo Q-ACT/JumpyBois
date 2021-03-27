@@ -36,6 +36,7 @@ public class CharLayout {
     int touchY;
     boolean touch;
     void setTouch(float touchX, float touchY){
+        touch = true;
         this.touchX = (int)touchX;
         this.touchY = (int)touchY;
 
@@ -48,28 +49,24 @@ public class CharLayout {
     private int touchTicks;
     void update(){
         scroll();
-        tapCheck();
         for (CharCard charCard : charCards) {
             charCard.currentPlayer = currentPlayer;
         }
     }
 
     void tapCheck(){
-        if(!touch && touchTicks < 20) {
-            for (int i = 0; i < charCards.length; i++) {
+        touch = false;
+        for (int i = 0; i < charCards.length; i++) {
                 charCards[i].setTouch(touchX, touchY);
                 if (charCards[i].active){
                     currentPlayer = i;
                     charCards[i].active = false;
                 }
             }
-            touchTicks = 20;
-        }
     }
 
     void scroll(){
         if(touch) {
-            touchTicks++;
             currentX = touchX;
             if(firstTouch){
                 previousX = currentX;

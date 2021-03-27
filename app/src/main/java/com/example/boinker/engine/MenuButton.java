@@ -56,10 +56,12 @@ class MenuButton {
                 && touchY < y + height;
     }
 
-    void release(){
-        isPressed = false;
+    Boolean getPressed(float touchX, float touchY){
+        return  touchX > x
+                && touchX < x + width
+                && touchY > y
+                && touchY < y + height;
     }
-
     void draw(Canvas canvas){
         if(icon == null)
             canvas.drawRect(x,y,x+width,y+height,paint);
