@@ -13,7 +13,6 @@ public class SpriteAnimation {
     private int previousAnimation = 0;
 
     public SpriteAnimation(Bitmap spriteSheet, int rows, int columns){
-
         sprite = spriteSheet;
         frameHeight = (float)sprite.getHeight() / rows;
         frameWidth = (float)sprite.getWidth() / columns;

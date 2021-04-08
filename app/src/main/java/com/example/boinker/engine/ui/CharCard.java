@@ -1,8 +1,10 @@
-package com.example.boinker.engine;
+package com.example.boinker.engine.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
+
+import com.example.boinker.engine.Game;
 
 public class CharCard {
     private Bitmap card;

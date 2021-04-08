@@ -1,15 +1,14 @@
-package com.example.boinker.engine;
+package com.example.boinker.engine.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 public class CharLayout {
     private CharCard[] charCards;
     private Boolean[] lockedChars;
     public int currentPlayer;
 
-    CharLayout(Boolean[] lockedChars,Bitmap[] icons, Bitmap[] lockedIcons, Bitmap card,Bitmap activeCard, int currentPlayer){
+    public CharLayout(Boolean[] lockedChars,Bitmap[] icons, Bitmap[] lockedIcons, Bitmap card,Bitmap activeCard, int currentPlayer){
         this.currentPlayer = currentPlayer;
         charCards = new CharCard[icons.length];
         this.lockedChars = lockedChars;
@@ -26,7 +25,7 @@ public class CharLayout {
         }
     }
 
-    void draw(Canvas canvas){
+    public void draw(Canvas canvas){
         for (CharCard charCard : charCards) {
             charCard.draw(canvas);
         }
@@ -35,7 +34,7 @@ public class CharLayout {
     int touchX;
     int touchY;
     boolean touch;
-    void setTouch(float touchX, float touchY){
+    public void setTouch(float touchX, float touchY){
         touch = true;
         this.touchX = (int)touchX;
         this.touchY = (int)touchY;
@@ -47,14 +46,14 @@ public class CharLayout {
     private int currentX;
     private boolean firstTouch = true;
     private int touchTicks;
-    void update(){
+    public void update(){
         scroll();
         for (CharCard charCard : charCards) {
             charCard.currentPlayer = currentPlayer;
         }
     }
 
-    void tapCheck(){
+    public void tapCheck(){
         touch = false;
         for (int i = 0; i < charCards.length; i++) {
                 charCards[i].setTouch(touchX, touchY);

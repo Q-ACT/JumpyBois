@@ -1,4 +1,4 @@
-package com.example.boinker.engine;
+package com.example.boinker.engine.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

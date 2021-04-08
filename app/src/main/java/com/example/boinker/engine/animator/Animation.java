@@ -53,7 +53,8 @@ class Animation {
     }
 
     void draw(Canvas canvas, int x, int y, Bitmap sprite){
-        float srcY = row * frameHeight, srcX = column * frameWidth;
+        float srcY = row * frameHeight,
+                srcX = column * frameWidth;
         Rect src = new Rect( (int) srcX, (int) srcY + 1, (int) srcX + (int) frameWidth, (int) srcY + (int) frameHeight);
         RectF dst = new RectF(x, y, x + frameWidth, y + frameHeight);
 

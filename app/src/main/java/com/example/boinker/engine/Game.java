@@ -14,9 +14,15 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 import com.example.boinker.R;
+import com.example.boinker.engine.ui.ButtonLayout;
+import com.example.boinker.engine.ui.CharLayout;
+import com.example.boinker.engine.ui.TextLayout;
 import com.example.boinker.gameobjectstuff.GameObject;
 import com.example.boinker.gameobjectstuff.ObjectScroller;
 import com.example.boinker.gameobjectstuff.Player;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -61,37 +67,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private CharLayout charLayout;
     public static ArrayList<GameObject> gameObjects;
     private int currentPlayer = 2;
-
+    private TextLayout textLayout;
 
 // Set extraDetails to true to show hitboxes, spawn rate, etc
     boolean extraDetails = false;
 //-----------------------------------------------------------------------------------
-
-    private Bitmap[] objectSprites = {
-            BitmapFactory.decodeResource(getResources(), R.drawable.spikes2),
-            BitmapFactory.decodeResource(getResources(), R.drawable.platform),
-            BitmapFactory.decodeResource(getResources(), R.drawable.crate),
-    };
-    private Bitmap[] playerSprites = {
-            BitmapFactory.decodeResource(getResources(), R.drawable.runnyboi),
-            BitmapFactory.decodeResource(getResources(), R.drawable.sticky),
-            BitmapFactory.decodeResource(getResources(), R.drawable.brainbot),
-            BitmapFactory.decodeResource(getResources(), R.drawable.squidboi)
-
-
-    };
-    private Bitmap[] playerSkinIcons = {
-            BitmapFactory.decodeResource(getResources(), R.drawable.runnyboiicon),
-            BitmapFactory.decodeResource(getResources(), R.drawable.stickyicon),
-            BitmapFactory.decodeResource(getResources(), R.drawable.brainboticon),
-            BitmapFactory.decodeResource(getResources(), R.drawable.squidboiicon)
-    };
-    private Bitmap[] lockedPlayerSkinIcons = {
-            BitmapFactory.decodeResource(getResources(), R.drawable.runnyboiicon),
-            BitmapFactory.decodeResource(getResources(), R.drawable.lockedsticky),
-            BitmapFactory.decodeResource(getResources(), R.drawable.lockedbrain),
-            BitmapFactory.decodeResource(getResources(), R.drawable.lockedsquid)
-    };
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    private Bitmap[] objectSprites;
+    private Bitmap[] playerSprites;
+    private Bitmap[] playerSkinIcons;
+    private Bitmap[] lockedPlayerSkinIcons;
     private Boolean[] lockedPlayers = {
             false,
             false,
@@ -120,11 +105,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
         screenWidth = size.x;
         screenHeight = size.y;
+        loadSprites();
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         gameState = GameState.MENU;
-
+        options.inScaled = false;
         buttonLayout = new ButtonLayout();
+        textLayout = new TextLayout(BitmapFactory.decodeResource(getResources(), R.drawable.ui_lettersandnumbers,options));
         objectScroller = new ObjectScroller(groundTexture,objectSprites);
         gameObjects = new ArrayList<>();
         player = new Player(playerSprites[currentPlayer], coinSheet);
@@ -148,6 +135,36 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         buttonLayout.newButton(screenWidth/2 - 20 , screenHeight/2 - 25,"resume",rsButton,2,1);
         buttonLayout.newButton(screenWidth/2 - 20, screenHeight/2 + 110,"main_menu",mmButton,2,1);
+
+        textLayout.newBox(100,100,"WEEE 123? fart lol",30,"fart");
+    }
+
+    public void loadSprites(){
+        objectSprites = new Bitmap[]{
+                BitmapFactory.decodeResource(getResources(), R.drawable.spikes2,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.platform,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.crate,options),
+        };
+
+        playerSprites = new Bitmap[]{
+                BitmapFactory.decodeResource(getResources(), R.drawable.runnyboi,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.sticky,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.brainbot,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.squidboi,options)
+        };
+
+        playerSkinIcons = new Bitmap[]{
+                BitmapFactory.decodeResource(getResources(), R.drawable.runnyboiicon,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.stickyicon,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.brainboticon,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.squidboiicon,options)
+        };
+        lockedPlayerSkinIcons = new Bitmap[]{
+                BitmapFactory.decodeResource(getResources(), R.drawable.runnyboiicon,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.lockedsticky,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.lockedbrain,options),
+                BitmapFactory.decodeResource(getResources(), R.drawable.lockedsquid,options)
+        };
     }
 
     @Override
@@ -202,6 +219,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 case MENU:
                     canvas.drawBitmap(title,screenWidth/2F - title.getWidth()/2F - 20, screenHeight/3F - title.getHeight()/2F,null);
                     buttonLayout.draw(canvas);
+                    textLayout.draw(canvas,"fart");
                     break;
 
                 case GAMEOVER:

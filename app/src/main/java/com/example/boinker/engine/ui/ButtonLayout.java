@@ -1,31 +1,31 @@
-package com.example.boinker.engine;
+package com.example.boinker.engine.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import java.util.ArrayList;
 
-class ButtonLayout {
+public class ButtonLayout {
     private ArrayList<MenuButton> buttons;
     boolean touch;
-    ButtonLayout(){
+    public ButtonLayout(){
         buttons = new ArrayList<>();
     }
 
-    void newButton(int x,int y,int width,int height, String label){
+    public void newButton(int x,int y,int width,int height, String label){
         buttons.add(new MenuButton(x,y,width,height,label));
     }
 
-    void newButton(int x, int y, int width, int height, String label, Bitmap icon,int rows, int columns){
+    public void newButton(int x, int y, int width, int height, String label, Bitmap icon,int rows, int columns){
         buttons.add(new MenuButton(x,y,width,height,label,icon,rows,columns));
     }
 
-    void newButton(int x, int y, String label, Bitmap icon, int rows, int columns){
+    public void newButton(int x, int y, String label, Bitmap icon, int rows, int columns){
         buttons.add(new MenuButton(x,y,label,icon,rows,columns));
     }
 
     float touchX;
     float touchY;
-    void setTouch(float tX, float tY){
+    public void setTouch(float tX, float tY){
         touchX = tX;
         touchY = tY;
         for(int i = 0; i < buttons.size(); i++) {
@@ -49,7 +49,7 @@ class ButtonLayout {
         }
     }
 
-    void pressCheck(){
+    public void pressCheck(){
         for(int i = 0; i < buttons.size(); i++) {
             if (buttons.get(i).active){
                 buttons.get(i).setPressed(touchX,touchY);
@@ -60,12 +60,12 @@ class ButtonLayout {
         }
     }
 
-    void resetPress(){
+    public void resetPress(){
         for(int i = 0; i < buttons.size(); i++) {
             buttons.get(i).isPressed = false;
         }
     }
-    boolean getPress(String label){
+    public boolean getPress(String label){
         for(int i = 0; i < buttons.size(); i++) {
             if(buttons.get(i).label.equals(label)) {
                 return buttons.get(i).isPressed;
@@ -74,14 +74,14 @@ class ButtonLayout {
         return false;
     }
 
-    void draw(Canvas canvas){
+    public void draw(Canvas canvas){
         for(int i = 0; i < buttons.size(); i++) {
             if(buttons.get(i).active)
                 buttons.get(i).draw(canvas);
         }
     }
 
-    void activate(String[] labels){
+    public void activate(String[] labels){
         for(int i = 0; i < buttons.size(); i++) {
             for(int j = 0; j < labels.length; j++) {
                 if (buttons.get(i).label.equals(labels[j])) {
