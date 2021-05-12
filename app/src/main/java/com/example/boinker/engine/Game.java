@@ -136,7 +136,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonLayout.newButton(screenWidth/2 - 20 , screenHeight/2 - 25,"resume",rsButton,2,1);
         buttonLayout.newButton(screenWidth/2 - 20, screenHeight/2 + 110,"main_menu",mmButton,2,1);
 
-        textLayout.newBox(100,100,"WEEE 123? fart lol",30,"fart");
+        textLayout.newBox("fart",30);
     }
 
     public void loadSprites(){
@@ -211,16 +211,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     player.draw(canvas, extraDetails);
 
                     buttonLayout.draw(canvas);
-                    canvas.drawText(String.valueOf(points),screenWidth - 200, 100,tpaint);
+                    textLayout.draw(canvas,screenWidth - 200, 100,String.valueOf(points),"fart");
                     canvas.drawText(String.valueOf(highScore),screenWidth - 200, 150,tpaint2);
                     canvas.drawText(String.valueOf(coins),screenWidth - 200, 200,tpaint2);
                     break;
 
                 case MENU:
                     canvas.drawBitmap(title,screenWidth/2F - title.getWidth()/2F - 20, screenHeight/3F - title.getHeight()/2F,null);
-                    buttonLayout.draw(canvas);
-                    textLayout.draw(canvas,"fart");
-                    break;
+                    buttonLayout.draw(canvas);break;
 
                 case GAMEOVER:
                     drawObjects(canvas);

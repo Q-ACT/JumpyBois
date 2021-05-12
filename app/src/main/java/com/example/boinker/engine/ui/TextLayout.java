@@ -15,16 +15,20 @@ public class TextLayout {
         this.charSheet = charSheet;
     }
 
-    public void newBox(int x, int y, String text, int size, String tag){
-        textBoxes.add(new TextBox(x,y,text,size,charSheet,tag));
+    public void newBox(String tag,int size,boolean ltr){
+        textBoxes.add(new TextBox(charSheet,tag,size,ltr));
     }
 
-     public void draw(Canvas canvas,String tag){
+    public void newBox(String tag,int size){
+        textBoxes.add(new TextBox(charSheet,tag,size,false));
+    }
+
+     public void draw(Canvas canvas,int x, int y, String text, String tag){
        for(int i = 0; i <= textBoxes.size()-1; i++){
-           //if(textBoxes.get(i).tag.equals(tag)){
+           if(textBoxes.get(i).tag.equals(tag)){
                Log.d("text", "render");
-               textBoxes.get(i).draw(canvas);
+               textBoxes.get(i).draw(canvas,x,y,text);
            }
        }
-    //}
+    }
 }
