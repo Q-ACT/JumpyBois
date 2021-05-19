@@ -19,9 +19,9 @@ public class TextLayout {
         textBoxes.add(new TextBox(charSheet,tag,size,ltr));
     }
 
-    public void newBox(String tag,int size){
-        textBoxes.add(new TextBox(charSheet,tag,size,false));
-    }
+//    public void newBox(String tag,int size){
+//        textBoxes.add(new TextBox(charSheet,tag,size,false));
+//    }
 
      public void draw(Canvas canvas,int x, int y, String text, String tag){
        for(int i = 0; i <= textBoxes.size()-1; i++){

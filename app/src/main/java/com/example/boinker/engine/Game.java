@@ -136,7 +136,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonLayout.newButton(screenWidth/2 - 20 , screenHeight/2 - 25,"resume",rsButton,2,1);
         buttonLayout.newButton(screenWidth/2 - 20, screenHeight/2 + 110,"main_menu",mmButton,2,1);
 
-        textLayout.newBox("fart",30);
+        textLayout.newBox("fart",30,false);
     }
 
     public void loadSprites(){

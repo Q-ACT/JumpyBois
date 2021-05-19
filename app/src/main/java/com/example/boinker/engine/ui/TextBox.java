@@ -45,7 +45,7 @@ public class TextBox {
             addCharacter(chars.indexOf(this.text.charAt(i)));
         }
         if(ltr){
-            for (int i =  buffer.size(); i > 0; i--){
+            for (int i = buffer.size()-1; i > 0; i--){
                 canvas.drawBitmap(buffer.get(i),x - frameWidth + frameWidth*i,y,null);
             }
         } else{
