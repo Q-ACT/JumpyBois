@@ -11,22 +11,23 @@ public class CharCard {
     private Bitmap activeCard;
     private Bitmap skinIcon;
     private Bitmap skinIconLocked;
-    private int x;
+    public int x;
     private int y;
     private int height;
     private int width;
-    private boolean unlocked = true;
+    public boolean unlocked;
     boolean active;
     private int index;
     int currentPlayer;
 
-    CharCard(Bitmap card, Bitmap activeCard, Bitmap skinIcon, Bitmap skinIconLocked, int xOffset, int currentPlayer, int index){
+    CharCard(Bitmap card, Bitmap activeCard, Bitmap skinIcon, Bitmap skinIconLocked, int xOffset, int currentPlayer, int index, boolean unlocked){
         this.index = index;
         this.currentPlayer = currentPlayer;
         this.card = card;
         this.activeCard = activeCard;
         this.skinIcon = skinIcon;
         this.skinIconLocked = skinIconLocked;
+        this.unlocked = unlocked;
         height = card.getHeight();
         width = card.getWidth();
         x = Game.screenWidth / 2 - width / 2;
@@ -40,18 +41,20 @@ public class CharCard {
         } else{
             canvas.drawBitmap(card,x,y,null);
         }
-        canvas.drawBitmap(skinIcon,x,y,null);
+        if(unlocked){
+            canvas.drawBitmap(skinIcon,x,y,null);
+        } else{
+            canvas.drawBitmap(skinIconLocked,x,y,null);
+        }
     }
 
     public void shift(int xShift){
         x += xShift;
     }
 
-    public void setTouch(int touchX,int touchY){
+    public void setTouch(int touchX, int touchY){
         if(touchX > x && touchX < x + width && touchY > y && touchY < y + height){
-            if(unlocked){
-                active = true;
-            }
+            active = true;
         }
     }
 }

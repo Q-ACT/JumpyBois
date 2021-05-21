@@ -21,9 +21,8 @@ import com.example.boinker.gameobjectstuff.GameObject;
 import com.example.boinker.gameobjectstuff.ObjectScroller;
 import com.example.boinker.gameobjectstuff.Player;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -41,7 +40,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     String[] gameButtons = {"pause"};
     String[] menuButtons = {"start","char"};
-    String[] gameOverButtons = {"resume","main_menu"};
+    String[] gameOverButtons = {"deadstartgame","deadmain_menu"};
     String[] charMenuButtons = {"back_menu"};
     String[] pauseButtons = {"resume","main_menu"};
 
@@ -51,6 +50,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final String SHARED_PREFS = "Shared_Prefs";
     private final String HIGHSCORE = "HighScore";
     private final String COINS = "Coins";
+    private final String CHARACTER = "Character";
+    private final String CHARLOCK1 = "CharLock1";
+    private final String CHARLOCK2 = "CharLock2";
+    private final String CHARLOCK3 = "CharLock3";
+
 
     private Player player;
     public boolean screenTouch;
@@ -66,7 +70,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private ObjectScroller objectScroller;
     private CharLayout charLayout;
     public static ArrayList<GameObject> gameObjects;
-    private int currentPlayer = 2;
+    private int currentPlayer = 0;
     private TextLayout textLayout;
 
 // Set extraDetails to true to show hitboxes, spawn rate, etc
@@ -77,12 +81,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap[] playerSprites;
     private Bitmap[] playerSkinIcons;
     private Bitmap[] lockedPlayerSkinIcons;
-    private Boolean[] lockedPlayers = {
-            false,
-            false,
-            false,
-            false
-    };
+    private Boolean[] unlockedPlayers;
     private Bitmap
         title = BitmapFactory.decodeResource(getResources(), R.drawable.ui_title),
         pauseWindow = BitmapFactory.decodeResource(getResources(), R.drawable.ui_ppage),
@@ -90,6 +89,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         coinSheet =  BitmapFactory.decodeResource(getResources(), R.drawable.coin),
         card =  BitmapFactory.decodeResource(getResources(), R.drawable.ui_charpage),
         activeCard = BitmapFactory.decodeResource(getResources(), R.drawable.ui_charpageactive),
+        gameOverWindow = BitmapFactory.decodeResource(getResources(), R.drawable.ui_gameover),
+        highScoreWindow =  BitmapFactory.decodeResource(getResources(), R.drawable.ui_newhighscore),
     //                                  ui buttons
     //-----------------------------------------------------------------------------------------
             bButton = BitmapFactory.decodeResource(getResources(), R.drawable.ui_bbutton),
@@ -108,6 +109,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         loadSprites();
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        loadPoints();
         gameState = GameState.MENU;
         options.inScaled = false;
         buttonLayout = new ButtonLayout();
@@ -115,7 +117,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         objectScroller = new ObjectScroller(groundTexture,objectSprites);
         gameObjects = new ArrayList<>();
         player = new Player(playerSprites[currentPlayer], coinSheet);
-        charLayout = new CharLayout(lockedPlayers,playerSkinIcons,lockedPlayerSkinIcons,card,activeCard,currentPlayer);
+        charLayout = new CharLayout(unlockedPlayers,playerSkinIcons,lockedPlayerSkinIcons,card,activeCard,currentPlayer);
 
         tpaint = new Paint();
         tpaint2 = new Paint();
@@ -127,16 +129,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         tpaint.setTextSize(50);
         points = 0;
 
-        loadHighScore();
+
         buttonLayout.newButton(100,100,"pause",pButton,2,1);
         buttonLayout.newButton(30,screenHeight - 100,50,50,"back_menu");
         buttonLayout.newButton(screenWidth/4, (int) (screenHeight * 0.8F),"start",stButton,2,1);
         buttonLayout.newButton((int)(screenWidth * 0.75F),(int) (screenHeight * 0.8F),"char",chButton,2,1);
-
         buttonLayout.newButton(screenWidth/2 - 20 , screenHeight/2 - 25,"resume",rsButton,2,1);
         buttonLayout.newButton(screenWidth/2 - 20, screenHeight/2 + 110,"main_menu",mmButton,2,1);
+        buttonLayout.newButton(screenWidth/2 - 200,screenHeight/2 + 130,"deadstartgame",stButton,2,1);
+        buttonLayout.newButton(screenWidth/2 + 160, screenHeight/2 + 130,"deadmain_menu",mmButton,2,1);
 
-        textLayout.newBox("fart",30,false);
+        textLayout.newBox("score",30,true);
+        textLayout.newBox("highscore",20,true);
+        textLayout.newBox("coins",20,true);
+        textLayout.newBox("charSelect",30,false);
+        textLayout.newBox("player1",20,false);
+        textLayout.newBox("player2",20,false);
+        textLayout.newBox("player3",20,false);
     }
 
     public void loadSprites(){
@@ -159,12 +168,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 BitmapFactory.decodeResource(getResources(), R.drawable.brainboticon,options),
                 BitmapFactory.decodeResource(getResources(), R.drawable.squidboiicon,options)
         };
+
         lockedPlayerSkinIcons = new Bitmap[]{
                 BitmapFactory.decodeResource(getResources(), R.drawable.runnyboiicon,options),
                 BitmapFactory.decodeResource(getResources(), R.drawable.lockedsticky,options),
                 BitmapFactory.decodeResource(getResources(), R.drawable.lockedbrain,options),
                 BitmapFactory.decodeResource(getResources(), R.drawable.lockedsquid,options)
         };
+
     }
 
     @Override
@@ -199,6 +210,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    int deadTicks = 0;
+    int waitTicks = 70;
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
@@ -211,9 +224,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     player.draw(canvas, extraDetails);
 
                     buttonLayout.draw(canvas);
-                    textLayout.draw(canvas,screenWidth - 200, 100,String.valueOf(points),"fart");
-                    canvas.drawText(String.valueOf(highScore),screenWidth - 200, 150,tpaint2);
-                    canvas.drawText(String.valueOf(coins),screenWidth - 200, 200,tpaint2);
+                    textLayout.draw(canvas,screenWidth - 120, 100,String.valueOf(points),"score");
+                    textLayout.draw(canvas,screenWidth - 120, 150,String.valueOf(highScore),"highscore");
+                    textLayout.draw(canvas,screenWidth - 120, 200,String.valueOf(coins),"coins");
                     break;
 
                 case MENU:
@@ -225,11 +238,18 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     objectScroller.draw(canvas);
                     player.draw(canvas, extraDetails);
 
-                    canvas.drawText("u ded", screenWidth / (float) 4, screenHeight / (float) 5, tpaint);
-                    buttonLayout.draw(canvas);
-                    canvas.drawText(String.valueOf(points),screenWidth - 200, 100,tpaint);
-                    canvas.drawText(String.valueOf(highScore),screenWidth - 200, 150,tpaint2);
-                    canvas.drawText(String.valueOf(coins),screenWidth - 200, 200,tpaint2);
+                    if(deadTicks > waitTicks) {
+                        canvas.drawRect(0,0,screenWidth,screenHeight,fogPaint);
+                        if(highScore < points){
+                            canvas.drawBitmap(highScoreWindow, screenWidth/2F - highScoreWindow.getWidth()/2F - 20, screenHeight/20F,null);
+                        }else{
+                            canvas.drawBitmap(gameOverWindow, screenWidth/2F - gameOverWindow.getWidth()/2F - 20, screenHeight/20F,null);
+                        }
+                        buttonLayout.draw(canvas);
+                        textLayout.draw(canvas, screenWidth - 120, 100, String.valueOf(points), "score");
+                        textLayout.draw(canvas, screenWidth - 120, 150,  String.valueOf(highScore), "highscore");
+                        textLayout.draw(canvas, screenWidth - 120, 200, String.valueOf(coins), "coins");
+                    }
                     break;
 
                 case PAUSE:
@@ -240,13 +260,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     canvas.drawRect(0,0,screenWidth,screenHeight,fogPaint);
                     canvas.drawBitmap(pauseWindow, screenWidth/2F - pauseWindow.getWidth()/2F - 20, screenHeight/20F,null);
                     buttonLayout.draw(canvas);
-                    canvas.drawText(String.valueOf(points),screenWidth - 200, 100,tpaint);
-                    canvas.drawText(String.valueOf(highScore),screenWidth - 200, 150,tpaint2);
-                    canvas.drawText(String.valueOf(coins),screenWidth - 200, 200,tpaint2);
+                    textLayout.draw(canvas,screenWidth - 120, 100,String.valueOf(points),"score");
+                    textLayout.draw(canvas,screenWidth - 120, 150,String.valueOf(highScore),"highscore");
+                    textLayout.draw(canvas,screenWidth - 120, 200,String.valueOf(coins),"coins");
                     break;
 
                 case CHAR_MENU:
-                    canvas.drawText("Character Selection", screenWidth / (float) 4, screenHeight / (float) 5, tpaint);
+                    textLayout.draw(canvas,screenWidth/4, screenHeight/8,"Character Selection","charSelect");
+                    textLayout.draw(canvas,screenWidth - 120, 100,String.valueOf(coins),"coins");
+                    if(!charLayout.charCards[1].unlocked) {
+                        textLayout.draw(canvas, charLayout.charCards[1].x + 100, screenHeight / 2 + 200, "10", "player1");
+                    }
+                    if(!charLayout.charCards[2].unlocked) {
+                        textLayout.draw(canvas, charLayout.charCards[2].x + 100, screenHeight / 2 + 200, "20", "player2");
+                    }
+                    if(!charLayout.charCards[3].unlocked) {
+                    textLayout.draw(canvas, charLayout.charCards[3].x + 100, screenHeight / 2 + 200, "30", "player3");
+                    }
                     buttonLayout.draw(canvas);
                     charLayout.draw(canvas);
                     break;
@@ -319,6 +349,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         switch (gameState) {
 
             case GAME:
+                deadTicks = 0;
                 buttonLayout.activate(gameButtons);
                 if (newGame) {
                     player.reset();
@@ -345,21 +376,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             case GAMEOVER:
                 buttonLayout.activate(gameOverButtons);
                 editor.putInt(COINS,coins);
+                editor.apply();
                 if(points > highScore) {
                     highScore = points;
                     highScore = points;
                     saveHighScore();
                 }
                 player.update();
-           //         gameHoldTouch = false;
                 newGame = true;
-                if(buttonLayout.getPress("resume")) {
-                    buttonLayout.resetPress();
-                    gameState = GameState.GAME;
-                }
-                else if (buttonLayout.getPress("main_menu")) {
-                    buttonLayout.resetPress();
-                    gameState = GameState.MENU;
+                deadTicks++;
+                if(deadTicks > waitTicks) {
+                    if (buttonLayout.getPress("deadstartgame")) {
+                        buttonLayout.resetPress();
+                        gameState = GameState.GAME;
+                    } else if (buttonLayout.getPress("deadmain_menu")) {
+                        buttonLayout.resetPress();
+                        gameState = GameState.MENU;
+                    }
                 }
                 break;
 
@@ -395,10 +428,18 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             case CHAR_MENU:
                 charLayout.update();
                 buttonLayout.activate(charMenuButtons);
+                unlockedPlayers = charLayout.getUnlockedPlayers();
+                Log.d("unlockedPlayers", "players: " + Arrays.toString(unlockedPlayers));
+                editor.putBoolean(CHARLOCK1,unlockedPlayers[1]);
+                editor.putBoolean(CHARLOCK2,unlockedPlayers[2]);
+                editor.putBoolean(CHARLOCK3,unlockedPlayers[3]);
+                editor.putInt(CHARACTER,currentPlayer);
+                editor.apply();
+                currentPlayer = charLayout.currentPlayer;
+                player.switchSprite(playerSprites[currentPlayer]);
                 if (buttonLayout.getPress("back_menu")) {
+
                     buttonLayout.resetPress();
-                    currentPlayer = charLayout.currentPlayer;
-                    player.switchSprite(playerSprites[currentPlayer]);
                     gameState = GameState.MENU;
                 }
                 break;
@@ -410,12 +451,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         editor.apply();
     }
 
-    private void loadHighScore(){
+    private void loadPoints(){
         highScore = sharedPreferences.getInt(HIGHSCORE,0);
         coins = sharedPreferences.getInt(COINS,0);
+        unlockedPlayers = new Boolean[4];
+        unlockedPlayers[0] = true;
+        unlockedPlayers[1] = sharedPreferences.getBoolean(CHARLOCK1,false);
+        unlockedPlayers[2] = sharedPreferences.getBoolean(CHARLOCK2,false);
+        unlockedPlayers[3] = sharedPreferences.getBoolean(CHARLOCK3,false);
     }
-
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -431,7 +475,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_UP:
                 buttonLayout.pressCheck();
                 screenTouch = false;
-                charLayout.tapCheck();
+                charLayout.tapCheck(coins);
+                coins = charLayout.coinUpdates();
                 return true;
         }
 

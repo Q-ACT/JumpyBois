@@ -26,7 +26,6 @@ public class TextLayout {
      public void draw(Canvas canvas,int x, int y, String text, String tag){
        for(int i = 0; i <= textBoxes.size()-1; i++){
            if(textBoxes.get(i).tag.equals(tag)){
-               Log.d("text", "render");
                textBoxes.get(i).draw(canvas,x,y,text);
            }
        }

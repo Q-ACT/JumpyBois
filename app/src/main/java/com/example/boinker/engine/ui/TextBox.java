@@ -36,7 +36,6 @@ public class TextBox {
         int row = frame / columns;
         int column = frame % columns;
         buffer.add(Bitmap.createBitmap(charSheet,column * frameWidth,row*frameHeight,frameWidth,frameHeight));
-        Log.d("text", "addedCharacter: "+frame);
     }
 
     public void draw(Canvas canvas,int x, int y, String text){
@@ -44,9 +43,12 @@ public class TextBox {
         for (int i = 0; i < text.length(); i++){
             addCharacter(chars.indexOf(this.text.charAt(i)));
         }
+        //int
         if(ltr){
-            for (int i = buffer.size()-1; i > 0; i--){
-                canvas.drawBitmap(buffer.get(i),x - frameWidth + frameWidth*i,y,null);
+            int j = 0;
+            for (int i = buffer.size()-1; i >= 0; i--){
+                j++;
+                canvas.drawBitmap(buffer.get(i),x+frameWidth-frameWidth*j,y,null);
             }
         } else{
             for (int i = 0; i < buffer.size(); i++){
